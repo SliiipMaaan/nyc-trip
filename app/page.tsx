@@ -1,5 +1,5 @@
 'use client';
-
+import { supabase } from '@/lib/supabase';
 import React, { useEffect, useMemo, useState } from 'react';
 
 type TripItem = {
@@ -381,6 +381,19 @@ export default function Page() {
     if (!ready) return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(checks));
   }, [checks, ready]);
+  
+    useEffect(() => {
+    const testConnection = async () => {
+      const { data, error } = await supabase
+        .from('test_items')
+        .select('*')
+        .limit(1);
+
+      console.log('SUPABASE TEST', { data, error });
+    };
+
+    testConnection();
+  }, []);
 
   const selectedDay = useMemo(
     () => tripDays.find((d) => d.id === selectedDayId) ?? tripDays[0],
