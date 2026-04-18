@@ -20,7 +20,6 @@ type TripDay = {
   items: TripItem[];
 };
 
-const STORAGE_KEY = 'nyc-trip-checks';
 
 const maps = (q: string) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
@@ -49,62 +48,71 @@ const tripDays: TripDay[] = [
   },
 ];
 
-function loadChecks(): Record<string, boolean> {
-  if (typeof window === 'undefined') return {};
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
-}
 
 export default function Page() {
-  const [selectedDayId, setSelectedDayId] = useState(tripDays[0].id);
-  const [checks, setChecks] = useState<Record<string, boolean>>({});
-  const [ready, setReady] = useState(false);
-  const [supabaseDebug, setSupabaseDebug] = useState('test en cours...');
+	const [selectedDayId, setSelectedDayId] = useState(tripDays[0].id);
+	const [checks, setChecks] = useState<Record<string, boolean>>({});
+	const [ready, setReady] = useState(false);
+	const [supabaseDebug, setSupabaseDebug] = useState('chargement...');
 
   useEffect(() => {
-    setChecks(loadChecks());
+  const loadChecksFromSupabase = async () => {
+    const { data, error } = await supabase
+      .from('trip_checks')
+      .select('item_id, checked');
+
+    if (error) {
+      setSupabaseDebug(`ERREUR LOAD: ${error.message}`);
+      setReady(true);
+      return;
+    }
+
+    const mapped: Record<string, boolean> = {};
+
+    for (const row of data ?? []) {
+      mapped[row.item_id] = row.checked;
+    }
+
+    setChecks(mapped);
+    setSupabaseDebug('SUPABASE CHECKS OK');
     setReady(true);
-  }, []);
+  };
 
-  useEffect(() => {
-    if (!ready) return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(checks));
-  }, [checks, ready]);
+  loadChecksFromSupabase();
+}, []);
 
-  // 🔥 TEST SUPABASE
-  useEffect(() => {
-    const testConnection = async () => {
-      const { data, error } = await supabase
-        .from('test_items')
-        .select('*')
-        .limit(1);
-
-      if (error) {
-        setSupabaseDebug(`ERREUR SUPABASE: ${error.message}`);
-        return;
-      }
-
-      setSupabaseDebug(`SUPABASE OK: ${JSON.stringify(data)}`);
-    };
-
-    testConnection();
-  }, []);
 
   const selectedDay = useMemo(
     () => tripDays.find((d) => d.id === selectedDayId) ?? tripDays[0],
     [selectedDayId]
   );
 
-  const toggle = (id: string) => {
-    setChecks((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
+  const toggle = async (id: string) => {
+  const newValue = !checks[id];
+
+  setChecks((prev) => ({
+    ...prev,
+    [id]: newValue,
+  }));
+
+  const { error } = await supabase
+    .from('trip_checks')
+    .upsert(
+      {
+        item_id: id,
+        checked: newValue,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'item_id' }
+    );
+
+  if (error) {
+    setSupabaseDebug(`ERREUR SAVE: ${error.message}`);
+    return;
+  }
+
+  setSupabaseDebug(`SAUVEGARDE OK: ${id} = ${newValue}`);
+};
 
   return (
     <main style={{ padding: 20 }}>
