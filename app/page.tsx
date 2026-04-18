@@ -6,10 +6,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 type TripItem = {
   id: string;
   title: string;
-  transport?: string;
-  map?: string;
-  info?: string;
-  notes?: string;
 };
 
 type TripDay = {
@@ -19,10 +15,6 @@ type TripDay = {
   subtitle: string;
   items: TripItem[];
 };
-
-
-const maps = (q: string) =>
-  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
 
 const tripDays: TripDay[] = [
   {
@@ -48,94 +40,101 @@ const tripDays: TripDay[] = [
   },
 ];
 
-
 export default function Page() {
-	const [selectedDayId, setSelectedDayId] = useState(tripDays[0].id);
-	const [checks, setChecks] = useState<Record<string, boolean>>({});
-	const [ready, setReady] = useState(false);
-	const [supabaseDebug, setSupabaseDebug] = useState('chargement...');
+  const [selectedDayId, setSelectedDayId] = useState(tripDays[0].id);
+  const [checks, setChecks] = useState<Record<string, boolean>>({});
+  const [ready, setReady] = useState(false);
+  const [supabaseDebug, setSupabaseDebug] = useState('chargement...');
 
+  // 🔥 LOAD depuis Supabase
   useEffect(() => {
-  const loadChecksFromSupabase = async () => {
-    const { data, error } = await supabase
-      .from('trip_checks')
-      .select('item_id, checked');
+    const loadChecksFromSupabase = async () => {
+      const { data, error } = await supabase
+        .from('trip_checks')
+        .select('item_id, checked');
 
-    if (error) {
-      setSupabaseDebug(`ERREUR LOAD: ${error.message}`);
+      if (error) {
+        setSupabaseDebug(`ERREUR LOAD: ${error.message}`);
+        setReady(true);
+        return;
+      }
+
+      const mapped: Record<string, boolean> = {};
+
+      for (const row of data ?? []) {
+        mapped[row.item_id] = row.checked;
+      }
+
+      setChecks(mapped);
+      setSupabaseDebug('SUPABASE CHECKS OK');
       setReady(true);
-      return;
-    }
+    };
 
-    const mapped: Record<string, boolean> = {};
-
-    for (const row of data ?? []) {
-      mapped[row.item_id] = row.checked;
-    }
-
-    setChecks(mapped);
-    setSupabaseDebug('SUPABASE CHECKS OK');
-    setReady(true);
-  };
-
-  loadChecksFromSupabase();
-}, []);
-
+    loadChecksFromSupabase();
+  }, []);
 
   const selectedDay = useMemo(
     () => tripDays.find((d) => d.id === selectedDayId) ?? tripDays[0],
     [selectedDayId]
   );
 
+  // 🔥 SAVE dans Supabase
   const toggle = async (id: string) => {
-  const newValue = !checks[id];
+    const newValue = !checks[id];
 
-  setChecks((prev) => ({
-    ...prev,
-    [id]: newValue,
-  }));
+    setChecks((prev) => ({
+      ...prev,
+      [id]: newValue,
+    }));
 
-  const { error } = await supabase
-    .from('trip_checks')
-    .upsert(
-      {
-        item_id: id,
-        checked: newValue,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: 'item_id' }
-    );
+    const { error } = await supabase
+      .from('trip_checks')
+      .upsert(
+        {
+          item_id: id,
+          checked: newValue,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'item_id' }
+      );
 
-  if (error) {
-    setSupabaseDebug(`ERREUR SAVE: ${error.message}`);
-    return;
-  }
+    if (error) {
+      setSupabaseDebug(`ERREUR SAVE: ${error.message}`);
+      return;
+    }
 
-  setSupabaseDebug(`SAUVEGARDE OK: ${id} = ${newValue}`);
-};
+    setSupabaseDebug(`SAUVEGARDE OK: ${id} = ${newValue}`);
+  };
 
   return (
     <main style={{ padding: 20 }}>
       <h1>NYC Trip</h1>
 
-      {/* 🔥 DEBUG SUPABASE */}
+      {/* DEBUG */}
       <div style={{ marginTop: 10, color: 'orange', fontWeight: 'bold' }}>
         {supabaseDebug}
       </div>
 
+      {/* TABS */}
       <div style={{ marginTop: 20 }}>
         {tripDays.map((day) => (
-          <button key={day.id} onClick={() => setSelectedDayId(day.id)}>
+          <button
+            key={day.id}
+            onClick={() => setSelectedDayId(day.id)}
+            style={{ marginRight: 10 }}
+          >
             {day.tabLabel}
           </button>
         ))}
       </div>
 
+      {/* CONTENU */}
       <h2>{selectedDay.title}</h2>
       <p>{selectedDay.subtitle}</p>
 
+      {/* CHECKLIST */}
       {selectedDay.items.map((item) => (
-        <div key={item.id}>
+        <div key={item.id} style={{ marginBottom: 10 }}>
           <button onClick={() => toggle(item.id)}>
             {checks[item.id] ? '✅' : '⬜'} {item.title}
           </button>
