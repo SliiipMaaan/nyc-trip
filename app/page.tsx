@@ -7,7 +7,22 @@ import Westtrip from './components/Westtrip';
 type MainTab = 'nyc' | 'west';
 
 export default function Page() {
-  const [activeTab, setActiveTab] = useState<MainTab>('nyc');
+  const [activeTab, setActiveTab] = useState<MainTab>(() => {
+  if (typeof window === 'undefined') return 'nyc';
+
+  const saved = window.localStorage.getItem('trip-tab');
+
+  if (saved === 'nyc' || saved === 'west') {
+    return saved;
+  }
+
+  return 'nyc';
+});
+
+const changeTab = (tab: MainTab) => {
+  setActiveTab(tab);
+  window.localStorage.setItem('trip-tab', tab);
+};
 
   return (
     <main>
@@ -25,7 +40,7 @@ export default function Page() {
       >
         <button
           type="button"
-          onClick={() => setActiveTab('nyc')}
+          onClick={() => changeTab('nyc')}
           style={{
             flex: 1,
             padding: '12px 14px',
@@ -45,7 +60,7 @@ export default function Page() {
 
         <button
           type="button"
-          onClick={() => setActiveTab('west')}
+          onClick={() => changeTab('west')}
           style={{
             flex: 1,
             padding: '12px 14px',
