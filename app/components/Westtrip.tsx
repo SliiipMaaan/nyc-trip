@@ -1011,6 +1011,7 @@ export default function Westtrip() {
   const [activeDayId, setActiveDayId] = useState(tripDays[0].id);
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
+  const [showCheckedItems, setShowCheckedItems] = useState(false);
 
   const activeDay = useMemo(
     () => tripDays.find((day) => day.id === activeDayId) ?? tripDays[0],
@@ -1022,12 +1023,31 @@ export default function Westtrip() {
     []
   );
 
-  const checkedCount = useMemo(
-    () => Object.values(checkedItems).filter(Boolean).length,
-    [checkedItems]
+const checkedCount = useMemo(() => {
+  const validIds = new Set(
+    tripDays.flatMap((day) => day.items.map((item) => item.id))
   );
 
+  return Object.entries(checkedItems).filter(
+    ([itemId, checked]) => validIds.has(itemId) && checked
+  ).length;
+}, [checkedItems]);
+
   const progress = totalItems > 0 ? Math.round((checkedCount / totalItems) * 100) : 0;
+
+  const checkedItemsList = useMemo(() => {
+    const result: { day: string; item: TripItem }[] = [];
+
+    tripDays.forEach((day) => {
+      day.items.forEach((item) => {
+        if (checkedItems[item.id]) {
+          result.push({ day: day.tabLabel, item });
+        }
+      });
+    });
+
+    return result;
+  }, [checkedItems]);
 
   useEffect(() => {
     const loadChecks = async () => {
@@ -1107,7 +1127,11 @@ export default function Westtrip() {
             Zion, Yellowstone, Yosemite, San Francisco, Highway 1, San Diego et Los Angeles.
           </p>
 
-          <div className="mt-5 rounded-2xl bg-white/15 p-4 backdrop-blur">
+          <button
+            type="button"
+            onClick={() => setShowCheckedItems((prev) => !prev)}
+            className="mt-5 w-full rounded-2xl bg-white/15 p-4 text-left backdrop-blur transition hover:bg-white/20"
+          >
             <div className="mb-2 flex items-center justify-between text-sm font-semibold">
               <span>Progression checklist</span>
               <span>
@@ -1122,12 +1146,52 @@ export default function Westtrip() {
               />
             </div>
 
+            <p className="mt-3 text-xs font-semibold text-orange-100">
+              {showCheckedItems ? 'Masquer les éléments cochés ▲' : 'Cliquer pour voir les éléments cochés ▼'}
+            </p>
+
+            {showCheckedItems && (
+              <div className="mt-4 space-y-2">
+                {checkedItemsList.length === 0 ? (
+                  <p className="rounded-xl bg-white/15 p-3 text-sm text-orange-50">
+                    Aucun élément coché pour le moment.
+                  </p>
+                ) : (
+                  checkedItemsList.map(({ day, item }) => (
+                    <div
+                      key={item.id}
+                      className="rounded-xl bg-white/20 p-3 text-sm text-white"
+                    >
+                      <p className="font-bold">
+                        ✅ {day} — {item.title}
+                      </p>
+                      <p className="mt-1 text-xs text-orange-50">
+                        {item.transport}
+                      </p>
+
+                      {item.map && (
+                        <a
+                          href={item.map}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={(event) => event.stopPropagation()}
+                          className="mt-2 inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-orange-800 hover:bg-orange-100"
+                        >
+                          📍 Ouvrir Maps
+                        </a>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
             {loading && (
               <p className="mt-2 text-xs text-orange-100">
                 Synchronisation Supabase en cours...
               </p>
             )}
-          </div>
+          </button>
         </section>
 
         <nav className="mb-5 flex gap-2 overflow-x-auto pb-2">
