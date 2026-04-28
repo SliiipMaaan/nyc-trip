@@ -25,11 +25,13 @@ type ExtraSection = {
   id: string;
   title: string;
   subtitle: string;
-  items: {
+  groups: {
     title: string;
-    location: string;
-    map: string;
-    description: string;
+    items: {
+      title: string;
+      map: string;
+      description: string;
+    }[];
   }[];
 };
 
@@ -48,11 +50,11 @@ const route = (origin: string, destination: string, waypoints?: string[]) => {
 
 const tripDays: TripDay[] = [
   {
-    id: 'd1',
+    id: 'w1',
     tabLabel: '5 mai',
     title: '5 mai — LAX → Las Vegas → Kanab',
-    subtitle: 'Arrivée à LAX vers 12h — récupération voiture + grosse route',
-    hotel: 'Nuit à Kanab (Utah)',
+    subtitle: 'Arrivée à LAX vers 12h, récupération voiture puis grosse route vers l’Utah.',
+    hotel: 'Nuit à Kanab',
     hotelMap: maps('Kanab Utah hotels'),
     items: [
       {
@@ -60,105 +62,121 @@ const tripDays: TripDay[] = [
         title: '✈️ Arrivée à LAX',
         transport: 'Arrivée vers 12h + récupération voiture',
         map: maps('Los Angeles International Airport'),
+        notes: 'Prévoir le temps d’immigration, bagages et location voiture.',
       },
       {
         id: 'w1-2',
-        title: '🚗 LAX → Seven Magic Mountains',
-        transport: 'Environ 4h à 4h30 selon trafic',
-        map: route('Los Angeles International Airport', 'Seven Magic Mountains Nevada'),
-        notes: 'Première grosse route. Prévoir eau, essence et snack.',
+        title: '🚗 LAX → Las Vegas',
+        transport: 'Environ 4h30 à 5h30 selon trafic',
+        map: route('Los Angeles International Airport', 'Las Vegas Strip', [
+          'Seven Magic Mountains Nevada',
+          'Barstow California',
+        ]),
+        notes: 'Points sympas sur la route : Barstow, désert de Mojave, Seven Magic Mountains.',
       },
       {
         id: 'w1-3',
         title: '📸 Seven Magic Mountains',
-        transport: 'Stop photo rapide',
+        transport: 'Stop photo rapide avant Las Vegas',
         map: maps('Seven Magic Mountains Nevada'),
-        notes: 'Installation artistique colorée dans le désert.',
+        notes: 'Beau spot coloré dans le désert. Possible spot drone à vérifier selon règles locales.',
       },
       {
         id: 'w1-4',
         title: '🌃 Pause Las Vegas',
-        transport: 'Repas rapide / marche courte sur le Strip',
+        transport: 'Pause repas / marche courte sur le Strip',
         map: maps('Las Vegas Strip'),
-        notes: 'Ne pas rester trop longtemps pour éviter une arrivée trop tardive à Kanab.',
+        notes: 'Ne pas rester trop longtemps pour éviter une arrivée très tardive à Kanab.',
       },
       {
         id: 'w1-5',
         title: '🚗 Las Vegas → Kanab',
         transport: 'Environ 3h à 3h30',
         map: route('Las Vegas Strip', 'Kanab Utah'),
+        notes: '➡️ Fin de journée : direction Kanab pour dormir.',
       },
     ],
   },
   {
-    id: 'd2',
+    id: 'w2',
     tabLabel: '6 mai',
     title: '6 mai — Page + Monument Valley → Bryce',
-    subtitle: 'Antelope Canyon, Horseshoe Bend, Forrest Gump Point',
-    hotel: 'Nuit vers Bryce / Tropic (Utah)',
-    hotelMap: maps('Tropic Utah hotels'),
+    subtitle: 'Lower Antelope Canyon à 8h30, Horseshoe Bend, Monument Valley et route vers Bryce.',
+    hotel: 'Nuit vers Orderville / Glendale / Hatch / Bryce',
+    hotelMap: maps('Orderville Glendale Hatch Utah hotels'),
     items: [
       {
         id: 'w2-1',
         title: '🚗 Kanab → Lower Antelope Canyon',
         transport: 'Environ 1h15',
         map: route('Kanab Utah', 'Lower Antelope Canyon'),
+        notes: 'Partir tôt. Arriver en avance pour le check-in.',
       },
       {
         id: 'w2-2',
-        title: '🏜️ 08:30 — Lower Antelope Canyon',
-        transport: 'Billet déjà pris',
+        title: '🏜️ 08h30 — Lower Antelope Canyon',
+        transport: 'Billets déjà pris',
         map: maps('Lower Antelope Canyon'),
-        notes: 'Arriver en avance pour le check-in.',
+        notes: 'Visite guidée obligatoire. Prévoir marge parking/check-in.',
       },
       {
         id: 'w2-3',
         title: '📸 Horseshoe Bend',
-        transport: 'Environ 15 min depuis Antelope',
+        transport: 'Environ 15 min depuis Antelope Canyon',
         map: maps('Horseshoe Bend Arizona'),
-        notes: 'Vue spectaculaire sur le Colorado.',
+        notes: 'Un des plus beaux points de vue du voyage.',
       },
       {
         id: 'w2-4',
-        title: '📸 Forrest Gump Point',
-        transport: 'Environ 2h30 depuis Page',
-        map: maps('Forrest Gump Point Monument Valley'),
-        notes: 'Spot mythique sur la route avec Monument Valley au fond.',
+        title: '🚗 Page → Forrest Gump Point',
+        transport: 'Environ 2h15 à 2h45',
+        map: route('Page Arizona', 'Forrest Gump Point Monument Valley'),
+        notes: 'Route très photogénique vers Monument Valley.',
       },
       {
         id: 'w2-5',
-        title: '🏜️ Monument Valley',
-        transport: 'Scenic drive / points de vue',
-        map: maps('Monument Valley Visitor Center'),
-        notes: 'Vérifier les règles locales, territoire Navajo.',
+        title: '📸 Forrest Gump Point',
+        transport: 'Stop photo mythique sur l’US-163',
+        map: maps('Forrest Gump Point Monument Valley'),
+        notes: 'Attention circulation. Bon spot photo et possiblement drone selon règles locales.',
       },
       {
         id: 'w2-6',
-        title: '🚗 Monument Valley → Bryce / Tropic',
-        transport: 'Environ 4h30 à 5h',
-        map: route('Monument Valley Visitor Center', 'Tropic Utah'),
+        title: '🏜️ Monument Valley',
+        transport: 'Visitor Center / vues principales',
+        map: maps('Monument Valley Visitor Center'),
+        notes: 'Territoire Navajo : vérifier horaires, accès et règles drone.',
+      },
+      {
+        id: 'w2-7',
+        title: '🚗 Monument Valley → zone Bryce',
+        transport: 'Environ 4h30 à 5h30 selon ville de nuit',
+        map: route('Monument Valley Visitor Center', 'Hatch Utah'),
+        notes: '➡️ Fin de journée : direction Orderville / Glendale / Hatch / Bryce pour dormir.',
       },
     ],
   },
   {
-    id: 'd3',
+    id: 'w3',
     tabLabel: '7 mai',
-    title: '7 mai — Bryce Canyon',
-    subtitle: 'Sunrise, hoodoos et randonnée',
-    hotel: 'Nuit vers Bryce / Tropic (Utah)',
-    hotelMap: maps('Tropic Utah hotels'),
+    title: '7 mai — Bryce Canyon journée complète',
+    subtitle: 'Journée complète dans Bryce Canyon : hoodoos, points de vue et randonnée.',
+    hotel: 'Nuit vers Bryce / Hatch / Glendale / Orderville',
+    hotelMap: maps('Bryce Canyon Hatch Glendale Orderville hotels'),
     items: [
       {
         id: 'w3-1',
         title: '🌅 Sunrise Point',
-        transport: 'Lever du soleil',
+        transport: 'Lever de soleil si possible',
         map: maps('Sunrise Point Bryce Canyon'),
+        notes: 'Très beau au lever du soleil.',
       },
       {
         id: 'w3-2',
         title: '🥾 Navajo Loop + Queen’s Garden',
         transport: 'Randonnée incontournable',
-        map: maps('Navajo Loop Trail Bryce Canyon'),
+        map: maps('Navajo Loop Queen Garden Trail Bryce Canyon'),
+        notes: 'Le meilleur combo pour descendre au milieu des hoodoos.',
       },
       {
         id: 'w3-3',
@@ -169,7 +187,7 @@ const tripDays: TripDay[] = [
       {
         id: 'w3-4',
         title: '📸 Bryce Point',
-        transport: 'Autre gros point de vue',
+        transport: 'Vue large sur l’amphithéâtre',
         map: maps('Bryce Point Bryce Canyon'),
       },
       {
@@ -177,435 +195,473 @@ const tripDays: TripDay[] = [
         title: '🌄 Sunset Point',
         transport: 'Fin de journée',
         map: maps('Sunset Point Bryce Canyon'),
+        notes: '➡️ Fin de journée : direction Zion / Springdale ou rester proche Bryce selon hôtel.',
       },
     ],
   },
   {
-    id: 'd4',
+    id: 'w4',
     tabLabel: '8 mai',
-    title: '8 mai — Bryce → Zion',
-    subtitle: 'Route courte + première découverte de Zion',
-    hotel: 'Nuit à Springdale / Hurricane (Zion)',
-    hotelMap: maps('Springdale Utah hotels'),
+    title: '8 mai — Zion journée complète puis route vers Yellowstone',
+    subtitle: 'Zion tôt le matin, puis très longue route en direction de Yellowstone.',
+    hotel: 'Nuit réservée : Mammoth Hot Springs Hotel',
+    hotelMap: maps('Mammoth Hot Springs Hotel Yellowstone'),
     items: [
       {
         id: 'w4-1',
-        title: '🚗 Bryce → Zion',
-        transport: 'Environ 2h à 2h30',
-        map: route('Bryce Canyon National Park', 'Springdale Utah'),
+        title: '🚗 Bryce / Orderville → Zion',
+        transport: 'Environ 1h30 à 2h30 selon ville de départ',
+        map: route('Hatch Utah', 'Zion National Park Visitor Center'),
       },
       {
         id: 'w4-2',
         title: '🥾 Canyon Overlook Trail',
         transport: 'Petite randonnée avec grosse vue',
         map: maps('Canyon Overlook Trail Zion'),
+        notes: 'Excellent rapport effort/vue.',
       },
       {
         id: 'w4-3',
-        title: '📸 Canyon Junction Bridge',
+        title: '🌿 Riverside Walk / Zion Canyon Scenic Drive',
+        transport: 'Balade facile selon timing',
+        map: maps('Riverside Walk Zion National Park'),
+        notes: 'Utiliser la navette si nécessaire.',
+      },
+      {
+        id: 'w4-4',
+        title: '📸 Canyon Junction Bridge / The Watchman',
         transport: 'Spot photo classique',
         map: maps('Canyon Junction Bridge Zion'),
       },
       {
-        id: 'w4-4',
-        title: '🌄 Watchman Trail',
-        transport: 'Option sunset si vous avez l’énergie',
-        map: maps('Watchman Trail Zion'),
+        id: 'w4-5',
+        title: '🚗 Zion → Mammoth Hot Springs',
+        transport: 'Très long trajet : environ 9h30 à 11h sans grosses pauses',
+        map: route('Zion National Park Visitor Center', 'Mammoth Hot Springs Hotel Yellowstone', [
+          'Salt Lake City Utah',
+          'Idaho Falls Idaho',
+        ]),
+        notes: '➡️ Fin de journée : direction Yellowstone. Très grosse route, prévoir de partir dès que possible. Idaho Falls uniquement comme repère de temps/pause, pas comme nuit.',
       },
     ],
   },
   {
-    id: 'd5',
+    id: 'w5',
     tabLabel: '9 mai',
-    title: '9 mai — Zion → Idaho Falls',
-    subtitle: 'Matin à Zion puis route vers Yellowstone',
-    hotel: 'Nuit à Idaho Falls (Idaho)',
-    hotelMap: maps('Idaho Falls hotels'),
+    title: '9 mai — Yellowstone nord + route vers Old Faithful',
+    subtitle: 'Mammoth, Lamar Valley, Canyon puis installation à Old Faithful Inn.',
+    hotel: 'Nuit réservée : Old Faithful Inn',
+    hotelMap: maps('Old Faithful Inn Yellowstone'),
     items: [
       {
         id: 'w5-1',
-        title: '🥾 Scout Lookout / Angels Landing',
-        transport: 'Matin tôt',
-        map: maps('Angels Landing Zion National Park'),
-        notes: 'Angels Landing nécessite un permis. Scout Lookout est une bonne alternative.',
-      },
-      {
-        id: 'w5-2',
-        title: '🌿 Riverside Walk',
-        transport: 'Balade facile',
-        map: maps('Riverside Walk Zion'),
-      },
-      {
-        id: 'w5-3',
-        title: '🚗 Zion → Idaho Falls',
-        transport: 'Longue route, environ 8h à 9h',
-        map: route('Springdale Utah', 'Idaho Falls Idaho', ['Salt Lake City Utah']),
-        notes: 'Journée très route. Salt Lake City peut servir de pause.',
-      },
-    ],
-  },
-  {
-    id: 'd6',
-    tabLabel: '10 mai',
-    title: '10 mai — Idaho Falls → Yellowstone',
-    subtitle: 'Entrée par West Yellowstone + premiers geysers',
-    hotel: 'Nuit à West Yellowstone (Montana)',
-    hotelMap: maps('West Yellowstone hotels'),
-    items: [
-      {
-        id: 'w6-1',
-        title: '🚗 Idaho Falls → West Yellowstone',
-        transport: 'Environ 2h à 2h30',
-        map: route('Idaho Falls Idaho', 'West Yellowstone Montana'),
-      },
-      {
-        id: 'w6-2',
-        title: '🏞️ West Entrance Yellowstone',
-        transport: 'Entrée du parc',
-        map: maps('West Entrance Yellowstone National Park'),
-        notes: 'Vérifier l’ouverture des routes avant de partir.',
-      },
-      {
-        id: 'w6-3',
-        title: '🌋 Old Faithful',
-        transport: 'Geyser incontournable',
-        map: maps('Old Faithful Yellowstone'),
-      },
-      {
-        id: 'w6-4',
-        title: '🎨 Grand Prismatic Spring',
-        transport: 'Point emblématique',
-        map: maps('Grand Prismatic Spring Yellowstone'),
-      },
-      {
-        id: 'w6-5',
-        title: '🥾 Fairy Falls Overlook',
-        transport: 'Vue haute sur Grand Prismatic',
-        map: maps('Fairy Falls Trailhead Yellowstone'),
-      },
-    ],
-  },
-  {
-    id: 'd7',
-    tabLabel: '11 mai',
-    title: '11 mai — Yellowstone',
-    subtitle: 'Faune, canyon et sources chaudes',
-    hotel: 'Nuit à West Yellowstone (Montana)',
-    hotelMap: maps('West Yellowstone hotels'),
-    items: [
-      {
-        id: 'w7-1',
-        title: '🐺 Lamar Valley',
-        transport: 'Très tôt le matin',
-        map: maps('Lamar Valley Yellowstone'),
-        notes: 'Meilleur secteur pour voir des animaux.',
-      },
-      {
-        id: 'w7-2',
         title: '💦 Mammoth Hot Springs',
-        transport: 'Terrasses calcaires',
+        transport: 'Matin, proche de l’hôtel',
         map: maps('Mammoth Hot Springs Yellowstone'),
       },
       {
-        id: 'w7-3',
-        title: '🌊 Grand Canyon of the Yellowstone',
-        transport: 'Points de vue majeurs',
-        map: maps('Grand Canyon of the Yellowstone'),
+        id: 'w5-2',
+        title: '🐺 Lamar Valley',
+        transport: 'Très tôt si possible pour les animaux',
+        map: maps('Lamar Valley Yellowstone'),
+        notes: 'Meilleure zone wildlife, surtout tôt ou en fin de journée.',
       },
       {
-        id: 'w7-4',
-        title: '📸 Artist Point',
-        transport: 'Vue classique sur la cascade',
-        map: maps('Artist Point Yellowstone'),
+        id: 'w5-3',
+        title: '🌊 Grand Canyon of the Yellowstone',
+        transport: 'Artist Point + points de vue',
+        map: maps('Grand Canyon of the Yellowstone Artist Point'),
+      },
+      {
+        id: 'w5-4',
+        title: '🚗 Canyon / Mammoth → Old Faithful Inn',
+        transport: 'Environ 1h30 à 2h30 selon routes ouvertes',
+        map: route('Mammoth Hot Springs Yellowstone', 'Old Faithful Inn Yellowstone'),
+        notes: '➡️ Fin de journée : direction Old Faithful Inn pour dormir.',
       },
     ],
   },
   {
-    id: 'd8',
+    id: 'w6',
+    tabLabel: '10 mai',
+    title: '10 mai — Yellowstone geysers + Grand Prismatic',
+    subtitle: 'Journée optimisée autour de Old Faithful et Grand Prismatic.',
+    hotel: 'Nuit réservée : Old Faithful Inn',
+    hotelMap: maps('Old Faithful Inn Yellowstone'),
+    items: [
+      {
+        id: 'w6-1',
+        title: '🌋 Old Faithful',
+        transport: 'À faire tôt ou selon horaire d’éruption',
+        map: maps('Old Faithful Yellowstone'),
+        notes: 'Regarder les horaires prévus sur place.',
+      },
+      {
+        id: 'w6-2',
+        title: '🥾 Upper Geyser Basin',
+        transport: 'Balade autour de Old Faithful',
+        map: maps('Upper Geyser Basin Yellowstone'),
+      },
+      {
+        id: 'w6-3',
+        title: '🎨 Grand Prismatic Spring',
+        transport: 'Spot emblématique',
+        map: maps('Grand Prismatic Spring Yellowstone'),
+      },
+      {
+        id: 'w6-4',
+        title: '📸 Fairy Falls Overlook',
+        transport: 'Vue haute sur Grand Prismatic',
+        map: maps('Grand Prismatic Overlook Trail Yellowstone'),
+        notes: 'La vue en hauteur est souvent plus impressionnante que depuis le boardwalk.',
+      },
+      {
+        id: 'w6-5',
+        title: '🌋 Norris Geyser Basin si temps',
+        transport: 'Option selon fatigue et routes',
+        map: maps('Norris Geyser Basin Yellowstone'),
+        notes: '➡️ Fin de journée : retour Old Faithful Inn.',
+      },
+    ],
+  },
+  {
+    id: 'w7',
+    tabLabel: '11 mai',
+    title: '11 mai — Yellowstone puis route vers Yosemite après 17h',
+    subtitle: 'Derniers spots Yellowstone puis départ après 17h pour couper la route.',
+    hotel: 'Nuit étape sur la route vers Yosemite',
+    hotelMap: maps('hotels between Yellowstone and Yosemite Nevada'),
+    items: [
+      {
+        id: 'w7-1',
+        title: '🌋 Derniers geysers autour de Old Faithful',
+        transport: 'Matin tranquille autour de l’hôtel',
+        map: maps('Old Faithful Yellowstone'),
+      },
+      {
+        id: 'w7-2',
+        title: '📸 West Thumb Geyser Basin si accessible',
+        transport: 'Option très belle si route ouverte',
+        map: maps('West Thumb Geyser Basin Yellowstone'),
+      },
+      {
+        id: 'w7-3',
+        title: '🚗 Départ après 17h vers le sud/ouest',
+        transport: 'Première portion de route vers Yosemite',
+        map: route('Old Faithful Inn Yellowstone', 'Twin Falls Idaho'),
+        notes: '➡️ Fin de journée : dormir dans une ville étape selon fatigue. Le lendemain 12 mai sera surtout route.',
+      },
+    ],
+  },
+  {
+    id: 'w8',
     tabLabel: '12 mai',
-    title: '12 mai — Yellowstone → Elko / Reno',
-    subtitle: 'Début de la grosse descente vers Yosemite',
-    hotel: 'Nuit étape Nevada',
-    hotelMap: maps('Elko Nevada hotels'),
+    title: '12 mai — Journée route vers Yosemite',
+    subtitle: 'Journée presque uniquement route avec quelques stops wahou rapides.',
+    hotel: 'Nuit vers Lee Vining / Mammoth Lakes / Mariposa selon accès',
+    hotelMap: maps('Mammoth Lakes Lee Vining Mariposa hotels'),
     items: [
       {
         id: 'w8-1',
-        title: '🚗 West Yellowstone → Elko',
-        transport: 'Très longue route',
-        map: route('West Yellowstone Montana', 'Elko Nevada'),
-        notes: 'Journée principalement trajet. Ajuster selon fatigue.',
+        title: '🚗 Route vers Yosemite',
+        transport: 'Très longue journée : environ 10h à 12h selon ville de départ et arrivée',
+        map: route('Twin Falls Idaho', 'Yosemite National Park'),
+        notes: 'Choisir la ville d’arrivée selon ouverture Tioga Pass. En mai, l’accès est à vérifier.',
       },
       {
         id: 'w8-2',
-        title: '⛽ Pauses essence / repas',
-        transport: 'À prévoir régulièrement',
-        map: maps('Elko Nevada'),
+        title: '📸 Shoshone Falls / Twin Falls',
+        transport: 'Stop wahou rapide si vous passez proche',
+        map: maps('Shoshone Falls Twin Falls Idaho'),
+        notes: 'Très belle cascade, bon stop sans trop détourer.',
       },
       {
         id: 'w8-3',
-        title: '🏨 Nuit étape',
-        transport: 'Elko, Winnemucca ou Reno selon avancement',
-        map: maps('Elko Nevada hotels'),
+        title: '📸 Bonneville Salt Flats / paysages désertiques',
+        transport: 'Option selon route choisie',
+        map: maps('Bonneville Salt Flats Utah'),
+        notes: 'Grand espace blanc impressionnant, potentiellement intéressant pour drone selon règles locales.',
+      },
+      {
+        id: 'w8-4',
+        title: '🌄 Arrivée ville étape Yosemite',
+        transport: 'Fin de grosse journée route',
+        map: maps('Mammoth Lakes California hotels'),
+        notes: '➡️ Fin de journée : dormir au plus proche de Yosemite selon route ouverte.',
       },
     ],
   },
   {
-    id: 'd9',
+    id: 'w9',
     tabLabel: '13 mai',
-    title: '13 mai — Route vers Yosemite',
-    subtitle: 'Arrivée proche Yosemite',
-    hotel: 'Nuit vers Yosemite / Mariposa',
-    hotelMap: maps('Mariposa California hotels'),
+    title: '13 mai — Yosemite journée complète',
+    subtitle: 'Première vraie journée Yosemite : vallée, cascades et points de vue.',
+    hotel: 'Nuit vers Yosemite / El Portal / Mariposa',
+    hotelMap: maps('El Portal Mariposa Yosemite hotels'),
     items: [
       {
         id: 'w9-1',
-        title: '🚗 Elko / Reno → Yosemite',
-        transport: 'Longue route',
-        map: route('Elko Nevada', 'Yosemite Valley'),
+        title: '🌄 Tunnel View',
+        transport: 'Point de vue iconique',
+        map: maps('Tunnel View Yosemite'),
       },
       {
         id: 'w9-2',
-        title: '📸 Tunnel View si arrivée assez tôt',
-        transport: 'Premier aperçu mythique',
-        map: maps('Tunnel View Yosemite'),
-      },
-      {
-        id: 'w9-3',
-        title: '🏨 Installation hôtel',
-        transport: 'El Portal, Mariposa ou Yosemite West',
-        map: maps('Yosemite hotels'),
-      },
-    ],
-  },
-  {
-    id: 'd10',
-    tabLabel: '14 mai',
-    title: '14 mai — Yosemite',
-    subtitle: 'Vallée, cascades et points de vue',
-    hotel: 'Nuit vers Yosemite / Mariposa',
-    hotelMap: maps('Mariposa California hotels'),
-    items: [
-      {
-        id: 'w10-1',
-        title: '🌄 Tunnel View',
-        transport: 'Matin ou sunset',
-        map: maps('Tunnel View Yosemite'),
-      },
-      {
-        id: 'w10-2',
         title: '💦 Yosemite Falls',
         transport: 'Balade facile',
         map: maps('Yosemite Falls'),
       },
       {
-        id: 'w10-3',
+        id: 'w9-3',
         title: '🥾 Mist Trail / Vernal Fall',
-        transport: 'Randonnée selon niveau',
+        transport: 'Randonnée selon niveau et conditions',
         map: maps('Mist Trail Yosemite'),
       },
       {
-        id: 'w10-4',
+        id: 'w9-4',
         title: '📸 Valley View',
-        transport: 'Spot photo calme',
+        transport: 'Spot photo fin de journée',
         map: maps('Valley View Yosemite'),
+        notes: '➡️ Fin de journée : rester dormir proche Yosemite.',
       },
     ],
   },
   {
-    id: 'd11',
-    tabLabel: '15 mai',
-    title: '15 mai — Yosemite → San Francisco',
-    subtitle: 'Route vers SF + première soirée',
+    id: 'w10',
+    tabLabel: '14 mai',
+    title: '14 mai — Yosemite puis arrivée San Francisco le soir',
+    subtitle: 'Deuxième journée Yosemite puis route vers San Francisco.',
     hotel: 'Nuit à San Francisco',
-    hotelMap: maps('San Francisco hotels'),
+    hotelMap: maps('San Francisco hotels Union Square Fishermans Wharf'),
     items: [
       {
-        id: 'w11-1',
+        id: 'w10-1',
+        title: '🌲 Mariposa Grove si accessible',
+        transport: 'Séquoias géants',
+        map: maps('Mariposa Grove Yosemite'),
+      },
+      {
+        id: 'w10-2',
+        title: '📸 Glacier Point si ouvert',
+        transport: 'Vue monumentale sur Half Dome',
+        map: maps('Glacier Point Yosemite'),
+        notes: 'À vérifier selon ouverture saisonnière.',
+      },
+      {
+        id: 'w10-3',
         title: '🚗 Yosemite → San Francisco',
         transport: 'Environ 4h à 5h',
         map: route('Yosemite Valley', 'San Francisco'),
-      },
-      {
-        id: 'w11-2',
-        title: '🌉 Golden Gate Bridge',
-        transport: 'Première vue si météo OK',
-        map: maps('Golden Gate Bridge San Francisco'),
-      },
-      {
-        id: 'w11-3',
-        title: '🌊 Fisherman’s Wharf',
-        transport: 'Balade / repas',
-        map: maps('Fishermans Wharf San Francisco'),
+        notes: '➡️ Fin de journée : arrivée San Francisco.',
       },
     ],
   },
   {
-    id: 'd12',
-    tabLabel: '16 mai',
-    title: '16 mai — San Francisco',
-    subtitle: 'Golden Gate, Alcatraz, quartiers',
+    id: 'w11',
+    tabLabel: '15 mai',
+    title: '15 mai — San Francisco journée complète',
+    subtitle: 'Golden Gate, quartiers, vues et balade urbaine.',
     hotel: 'Nuit à San Francisco',
-    hotelMap: maps('San Francisco hotels'),
+    hotelMap: maps('San Francisco hotels Union Square Fishermans Wharf'),
     items: [
       {
-        id: 'w12-1',
-        title: '🌉 Battery Spencer',
-        transport: 'Meilleure vue Golden Gate',
+        id: 'w11-1',
+        title: '🌉 Golden Gate Bridge + Battery Spencer',
+        transport: 'Matin si météo dégagée',
         map: maps('Battery Spencer Golden Gate Bridge'),
       },
       {
-        id: 'w12-2',
+        id: 'w11-2',
+        title: '🏘️ Painted Ladies',
+        transport: 'Spot photo classique',
+        map: maps('Painted Ladies San Francisco'),
+      },
+      {
+        id: 'w11-3',
+        title: '🚋 Lombard Street',
+        transport: 'Rue iconique',
+        map: maps('Lombard Street San Francisco'),
+      },
+      {
+        id: 'w11-4',
+        title: '🌊 Fisherman’s Wharf / Pier 39',
+        transport: 'Balade et repas',
+        map: maps('Pier 39 San Francisco'),
+        notes: '➡️ Fin de journée : nuit San Francisco.',
+      },
+    ],
+  },
+  {
+    id: 'w12',
+    tabLabel: '16 mai',
+    title: '16 mai — San Francisco journée complète',
+    subtitle: 'Alcatraz, quartiers et sunset.',
+    hotel: 'Nuit à San Francisco',
+    hotelMap: maps('San Francisco hotels Union Square Fishermans Wharf'),
+    items: [
+      {
+        id: 'w12-1',
         title: '🚢 Alcatraz',
         transport: 'À réserver en avance',
         map: maps('Alcatraz Landing Pier 33'),
       },
       {
+        id: 'w12-2',
+        title: '🏮 Chinatown',
+        transport: 'Balade rapide',
+        map: maps('Chinatown San Francisco'),
+      },
+      {
         id: 'w12-3',
-        title: '🏘️ Painted Ladies',
-        transport: 'Spot photo',
-        map: maps('Painted Ladies San Francisco'),
+        title: '🌳 Mission Dolores Park',
+        transport: 'Pause vue ville',
+        map: maps('Mission Dolores Park San Francisco'),
       },
       {
         id: 'w12-4',
-        title: '🚋 Lombard Street',
-        transport: 'Rue iconique',
-        map: maps('Lombard Street San Francisco'),
+        title: '🌅 Twin Peaks',
+        transport: 'Sunset si météo OK',
+        map: maps('Twin Peaks San Francisco'),
+        notes: '➡️ Fin de journée : nuit San Francisco.',
       },
     ],
   },
   {
-    id: 'd13',
+    id: 'w13',
     tabLabel: '17 mai',
-    title: '17 mai — San Francisco → Big Sur → Morro Bay',
-    subtitle: 'Pacific Coast Highway',
-    hotel: 'Nuit à Morro Bay / San Luis Obispo',
-    hotelMap: maps('Morro Bay hotels'),
+    title: '17 mai — Monterey, Carmel, Big Sur',
+    subtitle: 'Début Highway 1 : Monterey, Carmel-by-the-Sea et Big Sur.',
+    hotel: 'Nuit conseillée : Morro Bay / San Luis Obispo',
+    hotelMap: maps('Morro Bay San Luis Obispo hotels'),
     items: [
       {
         id: 'w13-1',
         title: '🚗 San Francisco → Monterey',
-        transport: 'Début Highway 1',
+        transport: 'Environ 2h à 2h30',
         map: route('San Francisco', 'Monterey California'),
       },
       {
         id: 'w13-2',
-        title: '🌊 17-Mile Drive',
-        transport: 'Route panoramique',
-        map: maps('17 Mile Drive California'),
+        title: '🐠 Monterey / Cannery Row',
+        transport: 'Balade bord de mer',
+        map: maps('Cannery Row Monterey'),
       },
       {
         id: 'w13-3',
+        title: '🏡 Carmel-by-the-Sea',
+        transport: 'Village très joli',
+        map: maps('Carmel-by-the-Sea California'),
+      },
+      {
+        id: 'w13-4',
+        title: '🌊 17-Mile Drive',
+        transport: 'Route panoramique',
+        map: maps('17-Mile Drive California'),
+      },
+      {
+        id: 'w13-5',
         title: '🌉 Bixby Creek Bridge',
         transport: 'Stop photo incontournable',
         map: maps('Bixby Creek Bridge'),
       },
       {
-        id: 'w13-4',
+        id: 'w13-6',
         title: '🌅 Big Sur',
-        transport: 'Falaises, océan et points de vue',
+        transport: 'Falaises, océan, points de vue',
         map: maps('Big Sur California'),
-      },
-      {
-        id: 'w13-5',
-        title: '🚗 Big Sur → Morro Bay',
-        transport: 'Route côtière',
-        map: route('Big Sur California', 'Morro Bay California'),
+        notes: '➡️ Fin de journée : dormir à Morro Bay ou San Luis Obispo pour couper la route.',
       },
     ],
   },
   {
-    id: 'd14',
+    id: 'w14',
     tabLabel: '18 mai',
-    title: '18 mai — Morro Bay → Santa Barbara → Los Angeles',
-    subtitle: 'Fin de la côte + arrivée LA',
-    hotel: 'Nuit à Los Angeles',
-    hotelMap: maps('Los Angeles hotels'),
+    title: '18 mai — Morro Bay → Santa Barbara → San Diego',
+    subtitle: 'Longue journée côte + arrivée San Diego le soir.',
+    hotel: 'Nuit à San Diego',
+    hotelMap: maps('San Diego hotels Gaslamp Little Italy'),
     items: [
       {
         id: 'w14-1',
         title: '🌊 Morro Rock',
-        transport: 'Petit stop matin',
+        transport: 'Stop matin rapide',
         map: maps('Morro Rock'),
       },
       {
         id: 'w14-2',
         title: '🚗 Morro Bay → Santa Barbara',
         transport: 'Environ 2h',
-        map: route('Morro Bay', 'Santa Barbara California'),
+        map: route('Morro Bay California', 'Santa Barbara California'),
       },
       {
         id: 'w14-3',
         title: '🌴 Santa Barbara',
-        transport: 'Pause repas / balade',
+        transport: 'Balade + repas',
         map: maps('Santa Barbara California'),
       },
       {
         id: 'w14-4',
-        title: '🌊 Malibu',
-        transport: 'Route vers LA',
-        map: maps('Malibu California'),
-      },
-      {
-        id: 'w14-5',
-        title: '🎡 Santa Monica Pier',
-        transport: 'Fin de journée',
-        map: maps('Santa Monica Pier'),
+        title: '🚗 Santa Barbara → San Diego',
+        transport: 'Environ 3h30 à 5h selon trafic LA',
+        map: route('Santa Barbara California', 'San Diego California', ['Malibu California']),
+        notes: '➡️ Fin de journée : arrivée San Diego le soir du 18 mai.',
       },
     ],
   },
   {
-    id: 'd15',
+    id: 'w15',
     tabLabel: '19 mai',
-    title: '19 mai — Los Angeles',
-    subtitle: 'Hollywood, Griffith, Beverly Hills',
-    hotel: 'Nuit à Los Angeles',
-    hotelMap: maps('Los Angeles hotels'),
+    title: '19 mai — San Diego journée complète',
+    subtitle: 'Balboa Park, La Jolla, Old Town et sunset.',
+    hotel: 'Nuit à San Diego ou route vers Los Angeles le soir',
+    hotelMap: maps('San Diego hotels Gaslamp Little Italy'),
     items: [
       {
         id: 'w15-1',
-        title: '⭐ Hollywood Walk of Fame',
-        transport: 'Balade rapide',
-        map: maps('Hollywood Walk of Fame'),
+        title: '🌳 Balboa Park',
+        transport: 'Matin',
+        map: maps('Balboa Park San Diego'),
       },
       {
         id: 'w15-2',
-        title: '🎬 Hollywood Sign View',
-        transport: 'Point de vue',
-        map: maps('Hollywood Sign Viewpoint'),
+        title: '🌊 La Jolla Cove',
+        transport: 'Après-midi',
+        map: maps('La Jolla Cove San Diego'),
       },
       {
         id: 'w15-3',
-        title: '🌇 Griffith Observatory',
-        transport: 'Sunset idéal',
-        map: maps('Griffith Observatory'),
+        title: '🏘️ Old Town San Diego',
+        transport: 'Balade / repas',
+        map: maps('Old Town San Diego'),
       },
       {
         id: 'w15-4',
-        title: '🌴 Beverly Hills / Rodeo Drive',
-        transport: 'Balade',
-        map: maps('Rodeo Drive Beverly Hills'),
+        title: '🌅 Sunset Cliffs',
+        transport: 'Coucher de soleil',
+        map: maps('Sunset Cliffs San Diego'),
+        notes: '➡️ Fin de journée : dormir San Diego ou remonter vers Los Angeles selon fatigue.',
       },
     ],
   },
   {
-    id: 'd16',
+    id: 'w16',
     tabLabel: '20 mai',
-    title: '20 mai — Los Angeles plage',
-    subtitle: 'Venice, Santa Monica, Malibu',
-    hotel: 'Nuit à Los Angeles',
-    hotelMap: maps('Los Angeles hotels'),
+    title: '20 mai — Los Angeles plages',
+    subtitle: 'Venice, Santa Monica, Malibu.',
+    hotel: 'Nuit Los Angeles / Santa Monica / LAX',
+    hotelMap: maps('Los Angeles hotels Santa Monica LAX'),
     items: [
       {
         id: 'w16-1',
-        title: '🏖️ Venice Beach',
-        transport: 'Balade bord de mer',
-        map: maps('Venice Beach Los Angeles'),
+        title: '🚗 San Diego → Los Angeles',
+        transport: 'Environ 2h30 à 4h selon trafic',
+        map: route('San Diego California', 'Santa Monica Pier'),
       },
       {
         id: 'w16-2',
-        title: '🏋️ Muscle Beach',
-        transport: 'À côté de Venice',
-        map: maps('Muscle Beach Venice'),
+        title: '🏖️ Venice Beach',
+        transport: 'Balade bord de mer',
+        map: maps('Venice Beach Los Angeles'),
       },
       {
         id: 'w16-3',
@@ -615,79 +671,88 @@ const tripDays: TripDay[] = [
       },
       {
         id: 'w16-4',
-        title: '🌅 Malibu sunset',
-        transport: 'Fin de journée',
+        title: '🌅 El Matador Beach / Malibu',
+        transport: 'Sunset',
         map: maps('El Matador State Beach Malibu'),
+        notes: '➡️ Fin de journée : nuit Los Angeles.',
       },
     ],
   },
   {
-    id: 'd17',
+    id: 'w17',
     tabLabel: '21 mai',
-    title: '21 mai — Los Angeles option parc / studio',
-    subtitle: 'Universal Studios ou Warner Bros',
-    hotel: 'Nuit à Los Angeles',
-    hotelMap: maps('Los Angeles hotels'),
+    title: '21 mai — Los Angeles incontournables',
+    subtitle: 'Hollywood, Griffith, Beverly Hills.',
+    hotel: 'Nuit Los Angeles / Hollywood / LAX',
+    hotelMap: maps('Los Angeles hotels Hollywood Beverly Hills LAX'),
     items: [
       {
         id: 'w17-1',
-        title: '🎢 Universal Studios Hollywood',
-        transport: 'Option journée complète',
-        map: maps('Universal Studios Hollywood'),
+        title: '⭐ Hollywood Walk of Fame',
+        transport: 'Balade rapide',
+        map: maps('Hollywood Walk of Fame'),
       },
       {
         id: 'w17-2',
-        title: '🎬 Warner Bros Studio Tour',
-        transport: 'Alternative plus cinéma',
-        map: maps('Warner Bros Studio Tour Hollywood'),
+        title: '🎬 Hollywood Sign View',
+        transport: 'Point de vue',
+        map: maps('Hollywood Sign Viewpoint'),
       },
       {
         id: 'w17-3',
-        title: '🌃 Downtown LA / Arts District',
-        transport: 'Soirée si énergie',
-        map: maps('Arts District Los Angeles'),
+        title: '🌴 Beverly Hills / Rodeo Drive',
+        transport: 'Balade',
+        map: maps('Rodeo Drive Beverly Hills'),
+      },
+      {
+        id: 'w17-4',
+        title: '🌇 Griffith Observatory',
+        transport: 'Sunset idéal',
+        map: maps('Griffith Observatory'),
+        notes: '➡️ Fin de journée : nuit Los Angeles.',
       },
     ],
   },
   {
-    id: 'd18',
+    id: 'w18',
     tabLabel: '22 mai',
     title: '22 mai — Los Angeles dernier jour',
-    subtitle: 'Derniers spots + valises',
-    hotel: 'Nuit proche LAX',
+    subtitle: 'Derniers spots, valises et nuit proche LAX.',
+    hotel: 'Nuit proche LAX conseillée',
     hotelMap: maps('LAX hotels'),
     items: [
       {
         id: 'w18-1',
-        title: '🏙️ Downtown LA',
-        transport: 'Petit tour urbain',
-        map: maps('Downtown Los Angeles'),
+        title: '🎢 Universal Studios ou Warner Bros Studio Tour',
+        transport: 'Option selon envie',
+        map: maps('Universal Studios Hollywood'),
       },
       {
         id: 'w18-2',
         title: '📚 The Last Bookstore',
-        transport: 'Spot photo sympa',
+        transport: 'Option Downtown LA',
         map: maps('The Last Bookstore Los Angeles'),
       },
       {
         id: 'w18-3',
         title: '🌮 Grand Central Market',
-        transport: 'Repas',
+        transport: 'Repas rapide',
         map: maps('Grand Central Market Los Angeles'),
       },
       {
         id: 'w18-4',
         title: '🧳 Préparation départ',
         transport: 'Essence, valises, rangement voiture',
-        map: maps('Los Angeles International Airport'),
+        map: maps('LAX car rental return'),
+        notes: '➡️ Fin de journée : dormir proche LAX pour départ du 23 mai matin.',
       },
     ],
   },
   {
-    id: 'd19',
+    id: 'w19',
     tabLabel: '23 mai',
-    title: '23 mai — Retour voiture + départ LAX',
-    subtitle: 'Fin du road trip',
+    title: '23 mai — Départ LAX',
+    subtitle: 'Rien prévoir : retour voiture et vol du matin.',
     hotel: 'Départ',
     hotelMap: maps('Los Angeles International Airport'),
     items: [
@@ -700,13 +765,13 @@ const tripDays: TripDay[] = [
       {
         id: 'w19-2',
         title: '🚗 Retour voiture',
-        transport: 'Prévoir marge',
+        transport: 'Prévoir grosse marge',
         map: maps('LAX car rental return'),
       },
       {
         id: 'w19-3',
         title: '✈️ Départ LAX',
-        transport: 'Arriver tôt à l’aéroport',
+        transport: 'Départ le matin : rien d’autre à prévoir',
         map: maps('Los Angeles International Airport'),
       },
     ],
@@ -715,201 +780,228 @@ const tripDays: TripDay[] = [
 
 const extraSections: ExtraSection[] = [
   {
-    id: 'drone',
-    title: '🛸 Spots vue & drone',
-    subtitle: 'Points de vue magnifiques — vérifier les règles drone avant chaque vol',
-    items: [
+    id: 'city-highlights',
+    title: '✅ À voir par grande zone',
+    subtitle: 'Les essentiels pour organiser les journées sans perdre de temps',
+    groups: [
       {
-        title: 'Seven Magic Mountains',
-        location: 'Nevada',
-        map: maps('Seven Magic Mountains Nevada'),
-        description:
-          'Installation artistique colorée en plein désert, parfaite pour photos larges.',
+        title: '🏜️ Page / Monument Valley',
+        items: [
+          { title: 'Lower Antelope Canyon', map: maps('Lower Antelope Canyon'), description: 'Visite réservée le 6 mai à 8h30.' },
+          { title: 'Horseshoe Bend', map: maps('Horseshoe Bend Arizona'), description: 'Vue spectaculaire sur le Colorado.' },
+          { title: 'Forrest Gump Point', map: maps('Forrest Gump Point Monument Valley'), description: 'Photo mythique sur l’US-163.' },
+          { title: 'Monument Valley Visitor Center', map: maps('Monument Valley Visitor Center'), description: 'Vue iconique sur les buttes.' },
+        ],
       },
       {
-        title: 'Horseshoe Bend',
-        location: 'Page, Arizona',
-        map: maps('Horseshoe Bend Arizona'),
-        description:
-          'Méandre spectaculaire du Colorado. Très beau spot photo, drone à vérifier.',
+        title: '🧡 Bryce / Zion',
+        items: [
+          { title: 'Sunrise Point', map: maps('Sunrise Point Bryce Canyon'), description: 'Parfait au lever du soleil.' },
+          { title: 'Navajo Loop + Queen’s Garden', map: maps('Navajo Loop Queen Garden Trail Bryce Canyon'), description: 'Randonnée incontournable de Bryce.' },
+          { title: 'Canyon Overlook Trail', map: maps('Canyon Overlook Trail Zion'), description: 'Petite rando, grosse vue.' },
+          { title: 'The Watchman / Canyon Junction', map: maps('Canyon Junction Bridge Zion'), description: 'Spot photo classique de Zion.' },
+        ],
       },
       {
-        title: 'Forrest Gump Point',
-        location: 'Monument Valley',
-        map: maps('Forrest Gump Point Monument Valley'),
-        description:
-          'Route mythique avec Monument Valley en fond. Attention aux voitures.',
+        title: '🐻 Yellowstone',
+        items: [
+          { title: 'Mammoth Hot Springs', map: maps('Mammoth Hot Springs Yellowstone'), description: 'Terrasses calcaires proches de l’hôtel Mammoth.' },
+          { title: 'Lamar Valley', map: maps('Lamar Valley Yellowstone'), description: 'Meilleure zone pour la faune.' },
+          { title: 'Grand Canyon of the Yellowstone', map: maps('Grand Canyon of the Yellowstone'), description: 'Artist Point et cascades.' },
+          { title: 'Old Faithful + Upper Geyser Basin', map: maps('Old Faithful Yellowstone'), description: 'Geyser mythique + bassins à côté de l’hôtel.' },
+          { title: 'Grand Prismatic Spring', map: maps('Grand Prismatic Spring Yellowstone'), description: 'Un des plus beaux spots du parc.' },
+        ],
       },
       {
-        title: 'Monument Valley',
-        location: 'Navajo Nation',
-        map: maps('Monument Valley Visitor Center'),
-        description:
-          'Paysage iconique de l’Ouest américain. Drone très réglementé.',
+        title: '🌲 Yosemite',
+        items: [
+          { title: 'Tunnel View', map: maps('Tunnel View Yosemite'), description: 'Vue mythique sur la vallée.' },
+          { title: 'Yosemite Falls', map: maps('Yosemite Falls'), description: 'Cascade facile d’accès.' },
+          { title: 'Mist Trail / Vernal Fall', map: maps('Mist Trail Yosemite'), description: 'Randonnée très connue.' },
+          { title: 'Valley View', map: maps('Valley View Yosemite'), description: 'Spot photo calme en fin de journée.' },
+        ],
       },
       {
-        title: 'Inspiration Point',
-        location: 'Bryce Canyon',
-        map: maps('Inspiration Point Bryce Canyon'),
-        description:
-          'Vue panoramique sur les hoodoos orange de Bryce.',
+        title: '🌉 San Francisco',
+        items: [
+          { title: 'Golden Gate / Battery Spencer', map: maps('Battery Spencer Golden Gate Bridge'), description: 'Meilleure vue sur le Golden Gate.' },
+          { title: 'Alcatraz', map: maps('Alcatraz Landing Pier 33'), description: 'À réserver en avance.' },
+          { title: 'Pier 39 / Fisherman’s Wharf', map: maps('Pier 39 San Francisco'), description: 'Balade facile et repas.' },
+          { title: 'Twin Peaks', map: maps('Twin Peaks San Francisco'), description: 'Vue sur toute la ville.' },
+        ],
       },
       {
-        title: 'Canyon Overlook',
-        location: 'Zion',
-        map: maps('Canyon Overlook Trail Zion'),
-        description:
-          'Petite randonnée avec vue impressionnante sur Zion. Drone interdit dans les parcs nationaux.',
+        title: '🌊 Highway 1 / Côte',
+        items: [
+          { title: 'Monterey', map: maps('Monterey California'), description: 'Cannery Row, bord de mer.' },
+          { title: 'Carmel-by-the-Sea', map: maps('Carmel-by-the-Sea California'), description: 'Village très joli.' },
+          { title: 'Bixby Creek Bridge', map: maps('Bixby Creek Bridge'), description: 'Pont iconique Big Sur.' },
+          { title: 'Santa Barbara', map: maps('Santa Barbara California'), description: 'Belle pause entre côte et San Diego.' },
+        ],
       },
       {
-        title: 'Battery Spencer',
-        location: 'San Francisco',
-        map: maps('Battery Spencer Golden Gate Bridge'),
-        description:
-          'Superbe vue sur le Golden Gate Bridge.',
+        title: '🌴 San Diego / Los Angeles',
+        items: [
+          { title: 'La Jolla Cove', map: maps('La Jolla Cove San Diego'), description: 'Très beau bord de mer à San Diego.' },
+          { title: 'Sunset Cliffs', map: maps('Sunset Cliffs San Diego'), description: 'Sunset parfait.' },
+          { title: 'Griffith Observatory', map: maps('Griffith Observatory'), description: 'Vue sur LA et Hollywood Sign.' },
+          { title: 'Santa Monica / Venice', map: maps('Santa Monica Pier Venice Beach'), description: 'Classiques bord de mer LA.' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'classic-viewpoints',
+    title: '📸 Points de vue classiques',
+    subtitle: 'Les beaux points de vue sans drone, même si certains sont déjà dans les journées',
+    groups: [
+      {
+        title: '🌵 Grands paysages',
+        items: [
+          { title: 'Horseshoe Bend', map: maps('Horseshoe Bend Arizona'), description: 'Méandre spectaculaire du Colorado.' },
+          { title: 'Forrest Gump Point', map: maps('Forrest Gump Point Monument Valley'), description: 'Route iconique avec Monument Valley au fond.' },
+          { title: 'Bryce Point', map: maps('Bryce Point Bryce Canyon'), description: 'Vue large sur les hoodoos.' },
+          { title: 'Inspiration Point', map: maps('Inspiration Point Bryce Canyon'), description: 'Panorama magnifique sur Bryce.' },
+          { title: 'Canyon Overlook', map: maps('Canyon Overlook Trail Zion'), description: 'Vue impressionnante sur Zion.' },
+          { title: 'Grand Prismatic Overlook', map: maps('Grand Prismatic Overlook Trail Yellowstone'), description: 'Meilleure vue sur Grand Prismatic.' },
+          { title: 'Artist Point', map: maps('Artist Point Yellowstone'), description: 'Vue classique sur la cascade de Yellowstone.' },
+          { title: 'Tunnel View', map: maps('Tunnel View Yosemite'), description: 'La carte postale de Yosemite.' },
+          { title: 'Battery Spencer', map: maps('Battery Spencer Golden Gate Bridge'), description: 'Vue Golden Gate.' },
+          { title: 'Bixby Creek Bridge', map: maps('Bixby Creek Bridge'), description: 'Vue Highway 1.' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'drone-spots',
+    title: '🛸 Points de vue drone à part',
+    subtitle: 'Toujours vérifier B4UFLY / AutoPylot / DJI FlySafe / règles locales avant chaque vol',
+    groups: [
+      {
+        title: '✅ Zones à vérifier hors parcs nationaux',
+        items: [
+          { title: 'Seven Magic Mountains', map: maps('Seven Magic Mountains Nevada'), description: 'Désert ouvert, joli contraste couleurs/désert.' },
+          { title: 'Route LA → Las Vegas / désert de Mojave', map: maps('Mojave Desert California'), description: 'Grands espaces, vérifier restrictions locales.' },
+          { title: 'Forrest Gump Point / US-163', map: maps('Forrest Gump Point Monument Valley'), description: 'Très cinématique, attention route et règles Navajo.' },
+          { title: 'Route Page → Monument Valley', map: maps('US 163 Arizona'), description: 'Paysages ouverts très beaux.' },
+          { title: 'Shoshone Falls / Twin Falls', map: maps('Shoshone Falls Twin Falls Idaho'), description: 'Très beau stop route vers Yosemite.' },
+          { title: 'Bonneville Salt Flats', map: maps('Bonneville Salt Flats Utah'), description: 'Grand espace blanc très graphique.' },
+          { title: 'Morro Bay / Morro Rock', map: maps('Morro Rock'), description: 'Côte + rocher iconique, vérifier zones interdites.' },
+          { title: 'Big Sur hors zones protégées', map: maps('Big Sur California'), description: 'Falaises et océan, beaucoup de zones peuvent être réglementées.' },
+          { title: 'El Matador Beach Malibu', map: maps('El Matador State Beach Malibu'), description: 'Rochers + sunset, vérifier règles plage/ville.' },
+          { title: 'Sunset Cliffs San Diego', map: maps('Sunset Cliffs San Diego'), description: 'Très beau coucher de soleil, vérifier restrictions locales.' },
+        ],
       },
       {
-        title: 'Bixby Creek Bridge',
-        location: 'Big Sur',
-        map: maps('Bixby Creek Bridge'),
-        description:
-          'Pont iconique sur la côte pacifique, très photogénique.',
-      },
-      {
-        title: 'Griffith Observatory',
-        location: 'Los Angeles',
-        map: maps('Griffith Observatory'),
-        description:
-          'Vue sur Los Angeles et le Hollywood Sign, surtout au coucher du soleil.',
-      },
-      {
-        title: 'El Matador Beach',
-        location: 'Malibu',
-        map: maps('El Matador State Beach Malibu'),
-        description:
-          'Plage avec rochers, arches naturelles et très belle lumière sunset.',
+        title: '🚫 Rappel important',
+        items: [
+          { title: 'Parcs nationaux', map: maps('National Park Service drone rules'), description: 'Drone interdit dans les parcs nationaux américains sauf autorisation spéciale.' },
+          { title: 'Territoires Navajo', map: maps('Navajo Nation drone rules Monument Valley'), description: 'Règles spécifiques : vérifier avant de voler.' },
+          { title: 'Villes / plages / ponts', map: maps('FAA B4UFLY'), description: 'Vérifier zones d’aéroport, restrictions temporaires et règles locales.' },
+        ],
       },
     ],
   },
   {
     id: 'pauses',
-    title: '☕ Pauses entre les trajets',
-    subtitle: 'Stops pratiques pour couper les longues routes',
-    items: [
+    title: '☕ Pauses utiles sur longues routes',
+    subtitle: 'Stops rapides pour couper les gros trajets',
+    groups: [
       {
-        title: 'Barstow',
-        location: 'Californie',
-        map: maps('Barstow California'),
-        description: 'Pause essence / café pratique entre LA et Las Vegas.',
-      },
-      {
-        title: 'Kingman Route 66',
-        location: 'Arizona',
-        map: maps('Kingman Route 66 Arizona'),
-        description: 'Ambiance Route 66, bien pour une pause vintage.',
-      },
-      {
-        title: 'Kanab',
-        location: 'Utah',
-        map: maps('Kanab Utah'),
-        description: 'Ville étape centrale entre Page, Zion et Bryce.',
-      },
-      {
-        title: 'Salt Lake City',
-        location: 'Utah',
-        map: maps('Salt Lake City Utah'),
-        description: 'Bonne grosse pause entre Zion et Yellowstone.',
-      },
-      {
-        title: 'Idaho Falls',
-        location: 'Idaho',
-        map: maps('Idaho Falls Idaho'),
-        description: 'Étape pratique avant West Yellowstone.',
-      },
-      {
-        title: 'Elko',
-        location: 'Nevada',
-        map: maps('Elko Nevada'),
-        description: 'Ville étape utile entre Yellowstone et Yosemite.',
-      },
-      {
-        title: 'Monterey',
-        location: 'Californie',
-        map: maps('Monterey California'),
-        description: 'Pause agréable avant Big Sur.',
-      },
-      {
-        title: 'Santa Barbara',
-        location: 'Californie',
-        map: maps('Santa Barbara California'),
-        description: 'Belle pause entre Morro Bay et Los Angeles.',
+        title: '🚗 Stops pratiques',
+        items: [
+          { title: 'Barstow', map: maps('Barstow California'), description: 'Pause rapide LA → Vegas.' },
+          { title: 'Seven Magic Mountains', map: maps('Seven Magic Mountains Nevada'), description: 'Stop photo avant Las Vegas.' },
+          { title: 'Las Vegas', map: maps('Las Vegas Strip'), description: 'Pause repas avant Kanab.' },
+          { title: 'Kanab', map: maps('Kanab Utah'), description: 'Ville stratégique entre Page, Bryce et Zion.' },
+          { title: 'Salt Lake City', map: maps('Salt Lake City Utah'), description: 'Grosse pause sur la route Zion → Yellowstone.' },
+          { title: 'Twin Falls', map: maps('Twin Falls Idaho'), description: 'Stop sympa possible avec Shoshone Falls.' },
+          { title: 'Elko', map: maps('Elko Nevada'), description: 'Ville étape pratique vers Yosemite.' },
+          { title: 'Monterey', map: maps('Monterey California'), description: 'Pause agréable avant Big Sur.' },
+          { title: 'Santa Barbara', map: maps('Santa Barbara California'), description: 'Pause chill avant San Diego.' },
+        ],
       },
     ],
   },
   {
     id: 'hotels',
-    title: '🏨 Hôtels / villes où dormir',
-    subtitle: 'Villes pratiques selon l’itinéraire',
-    items: [
+    title: '🏨 Hôtels par zone',
+    subtitle: 'Sous-catégories par endroit avec liens Maps',
+    groups: [
       {
-        title: 'Kanab',
-        location: 'Utah',
-        map: maps('Kanab Utah hotels'),
-        description: 'Pratique après Vegas et avant Antelope Canyon.',
+        title: '5 mai — Kanab',
+        items: [
+          { title: 'Hampton Inn Kanab', map: maps('Hampton Inn Kanab Utah'), description: 'Bien placé, pratique pour repartir vers Page.' },
+          { title: 'La Quinta Inn & Suites Kanab', map: maps('La Quinta Inn Suites Kanab Utah'), description: 'Option simple et pratique.' },
+          { title: 'Best Western Red Hills Kanab', map: maps('Best Western Red Hills Kanab Utah'), description: 'Central dans Kanab.' },
+          { title: 'Comfort Suites Kanab', map: maps('Comfort Suites Kanab Utah'), description: 'Pratique pour une nuit étape.' },
+        ],
       },
       {
-        title: 'Tropic / Bryce Canyon City',
-        location: 'Bryce Canyon',
-        map: maps('Tropic Utah hotels'),
-        description: 'Idéal pour dormir proche de Bryce.',
+        title: '6 au 8 mai — Bryce / Orderville / Glendale / Hatch',
+        items: [
+          { title: 'Best Western Plus Bryce Canyon Grand Hotel', map: maps('Best Western Plus Bryce Canyon Grand Hotel'), description: 'Très proche de Bryce, pratique mais souvent plus cher.' },
+          { title: 'Bryce Canyon Inn', map: maps('Bryce Canyon Inn Tropic Utah'), description: 'Tropic, bon compromis proche Bryce.' },
+          { title: 'Hatch Station Motel', map: maps('Hatch Station Motel Utah'), description: 'Hatch, pratique pour Bryce et route Zion.' },
+          { title: 'Arrowhead Country Inn', map: maps('Arrowhead Country Inn Mount Carmel Utah'), description: 'Zone Mount Carmel / Orderville, bien placé vers Zion.' },
+        ],
       },
       {
-        title: 'Springdale / Hurricane',
-        location: 'Zion',
-        map: maps('Springdale Utah hotels'),
-        description: 'Springdale est idéal mais cher, Hurricane souvent moins cher.',
+        title: '8 au 9 mai — Yellowstone Mammoth',
+        items: [
+          { title: 'Mammoth Hot Springs Hotel', map: maps('Mammoth Hot Springs Hotel Yellowstone'), description: 'Hôtel réservé pour la nuit du 8 au 9 mai.' },
+        ],
       },
       {
-        title: 'Idaho Falls',
-        location: 'Idaho',
-        map: maps('Idaho Falls hotels'),
-        description: 'Bonne étape avant Yellowstone.',
+        title: '9 au 11 mai — Yellowstone Old Faithful',
+        items: [
+          { title: 'Old Faithful Inn', map: maps('Old Faithful Inn Yellowstone'), description: 'Hôtel réservé pour les nuits du 9 au 11 mai.' },
+        ],
       },
       {
-        title: 'West Yellowstone',
-        location: 'Montana',
-        map: maps('West Yellowstone hotels'),
-        description: 'Très pratique pour entrer dans Yellowstone.',
+        title: '12 / 13 mai — Route Yosemite / Yosemite',
+        items: [
+          { title: 'Yosemite View Lodge', map: maps('Yosemite View Lodge El Portal'), description: 'Très pratique à El Portal, proche entrée Yosemite.' },
+          { title: 'Rush Creek Lodge', map: maps('Rush Creek Lodge Yosemite'), description: 'Très belle option proche Yosemite.' },
+          { title: 'Mariposa Lodge', map: maps('Mariposa Lodge California'), description: 'Mariposa, souvent plus abordable.' },
+          { title: 'Mammoth Mountain Inn', map: maps('Mammoth Mountain Inn'), description: 'Option côté Mammoth Lakes si Tioga Pass ouvert.' },
+        ],
       },
       {
-        title: 'Elko / Reno',
-        location: 'Nevada',
-        map: maps('Elko Nevada hotels'),
-        description: 'Étape pour couper la route vers Yosemite.',
+        title: '14 au 17 mai — San Francisco',
+        items: [
+          { title: 'Hotel Riu Plaza Fisherman’s Wharf', map: maps('Hotel Riu Plaza Fishermans Wharf San Francisco'), description: 'Très bien placé pour Pier 39 / Fisherman’s Wharf.' },
+          { title: 'The Handlery Union Square', map: maps('Handlery Union Square Hotel San Francisco'), description: 'Union Square, pratique pour visiter.' },
+          { title: 'Stanford Court San Francisco', map: maps('Stanford Court San Francisco'), description: 'Nob Hill, bon emplacement central.' },
+          { title: 'Hotel Zephyr San Francisco', map: maps('Hotel Zephyr San Francisco'), description: 'Fisherman’s Wharf, ambiance moderne.' },
+        ],
       },
       {
-        title: 'Mariposa / El Portal',
-        location: 'Yosemite',
-        map: maps('Mariposa California hotels'),
-        description: 'Options pratiques autour de Yosemite.',
+        title: '17 mai — Morro Bay / San Luis Obispo',
+        items: [
+          { title: '456 Embarcadero Inn & Suites', map: maps('456 Embarcadero Inn Suites Morro Bay'), description: 'Morro Bay, très bien placé.' },
+          { title: 'Harbor House Inn Morro Bay', map: maps('Harbor House Inn Morro Bay'), description: 'Simple et central.' },
+          { title: 'Apple Farm Inn San Luis Obispo', map: maps('Apple Farm Inn San Luis Obispo'), description: 'Option confortable à San Luis Obispo.' },
+          { title: 'La Quinta Inn & Suites San Luis Obispo Downtown', map: maps('La Quinta Inn Suites San Luis Obispo Downtown'), description: 'Pratique et moderne.' },
+        ],
       },
       {
-        title: 'San Francisco',
-        location: 'Californie',
-        map: maps('San Francisco hotels'),
-        description: 'Base pour Golden Gate, Alcatraz et Highway 1.',
+        title: '18 / 19 mai — San Diego',
+        items: [
+          { title: 'The Guild Hotel San Diego', map: maps('The Guild Hotel San Diego'), description: 'Downtown, bon emplacement.' },
+          { title: 'Staypineapple Hotel Z San Diego', map: maps('Staypineapple Hotel Z San Diego'), description: 'Gaslamp, pratique pour sortir.' },
+          { title: 'Kings Inn San Diego', map: maps('Kings Inn San Diego'), description: 'Souvent bon rapport qualité/prix.' },
+          { title: 'La Jolla Shores Hotel', map: maps('La Jolla Shores Hotel'), description: 'Plus plage, très agréable si budget OK.' },
+        ],
       },
       {
-        title: 'Morro Bay / San Luis Obispo',
-        location: 'Highway 1',
-        map: maps('Morro Bay hotels'),
-        description: 'Très bonne étape entre Big Sur et Los Angeles.',
-      },
-      {
-        title: 'Los Angeles / LAX',
-        location: 'Californie',
-        map: maps('Los Angeles hotels'),
-        description: 'Base finale avant le départ.',
+        title: '20 au 23 mai — Los Angeles / LAX',
+        items: [
+          { title: 'The Garland', map: maps('The Garland Los Angeles'), description: 'Bien pour Universal / Hollywood.' },
+          { title: 'Miyako Hotel Los Angeles', map: maps('Miyako Hotel Los Angeles'), description: 'Downtown / Little Tokyo.' },
+          { title: 'Hilton Los Angeles Airport', map: maps('Hilton Los Angeles Airport'), description: 'Pratique pour la dernière nuit proche LAX.' },
+          { title: 'Hyatt Regency Los Angeles International Airport', map: maps('Hyatt Regency Los Angeles International Airport'), description: 'Très pratique pour départ matin.' },
+        ],
       },
     ],
   },
@@ -935,8 +1027,7 @@ export default function Westtrip() {
     [checkedItems]
   );
 
-  const progress =
-    totalItems > 0 ? Math.round((checkedCount / totalItems) * 100) : 0;
+  const progress = totalItems > 0 ? Math.round((checkedCount / totalItems) * 100) : 0;
 
   useEffect(() => {
     const loadChecks = async () => {
@@ -1012,8 +1103,8 @@ export default function Westtrip() {
           </h1>
 
           <p className="mt-3 max-w-2xl text-sm text-orange-50 md:text-base">
-            Du 5 au 23 mai — LAX, Vegas, Kanab, Page, Monument Valley, Bryce,
-            Zion, Yellowstone, Yosemite, San Francisco, Highway 1 et Los Angeles.
+            Du 5 au 23 mai — LAX, Las Vegas, Kanab, Page, Monument Valley, Bryce,
+            Zion, Yellowstone, Yosemite, San Francisco, Highway 1, San Diego et Los Angeles.
           </p>
 
           <div className="mt-5 rounded-2xl bg-white/15 p-4 backdrop-blur">
@@ -1059,6 +1150,18 @@ export default function Westtrip() {
             );
           })}
         </nav>
+
+        <select
+          value={activeDayId}
+          onChange={(e) => setActiveDayId(e.target.value)}
+          className="mb-5 w-full rounded-2xl border border-orange-200 bg-white px-4 py-3 text-sm font-bold text-stone-900 shadow-sm md:hidden"
+        >
+          {tripDays.map((day) => (
+            <option key={day.id} value={day.id}>
+              {day.tabLabel} — {day.title}
+            </option>
+          ))}
+        </select>
 
         <section className="rounded-3xl bg-white p-5 shadow-xl">
           <div className="mb-5">
@@ -1111,9 +1214,7 @@ export default function Westtrip() {
                     <div className="min-w-0 flex-1">
                       <h3
                         className={`text-base font-black ${
-                          checked
-                            ? 'text-green-800 line-through'
-                            : 'text-stone-900'
+                          checked ? 'text-green-800 line-through' : 'text-stone-900'
                         }`}
                       >
                         {item.title}
@@ -1168,32 +1269,39 @@ export default function Westtrip() {
                 </span>
               </summary>
 
-              <div className="mt-5 grid gap-3 md:grid-cols-2">
-                {section.items.map((item) => (
-                  <article
-                    key={`${section.id}-${item.title}`}
-                    className="rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50 to-white p-4"
-                  >
-                    <h3 className="text-base font-black text-stone-900">
-                      {item.title}{' '}
-                      <span className="text-sm font-semibold text-stone-500">
-                        ({item.location})
-                      </span>
+              <div className="mt-5 space-y-5">
+                {section.groups.map((group) => (
+                  <div key={group.title}>
+                    <h3 className="mb-3 text-lg font-black text-orange-800">
+                      {group.title}
                     </h3>
 
-                    <p className="mt-2 text-sm text-stone-700">
-                      {item.description}
-                    </p>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      {group.items.map((item) => (
+                        <article
+                          key={`${section.id}-${group.title}-${item.title}`}
+                          className="rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50 to-white p-4"
+                        >
+                          <h4 className="text-base font-black text-stone-900">
+                            {item.title}
+                          </h4>
 
-                    <a
-                      href={item.map}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-3 inline-flex rounded-full bg-stone-900 px-4 py-2 text-sm font-bold text-white hover:bg-stone-700"
-                    >
-                      📍 Ouvrir Maps
-                    </a>
-                  </article>
+                          <p className="mt-2 text-sm text-stone-700">
+                            {item.description}
+                          </p>
+
+                          <a
+                            href={item.map}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="mt-3 inline-flex rounded-full bg-stone-900 px-4 py-2 text-sm font-bold text-white hover:bg-stone-700"
+                          >
+                            📍 Ouvrir Maps
+                          </a>
+                        </article>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             </details>
